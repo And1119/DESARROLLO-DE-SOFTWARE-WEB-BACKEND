@@ -1,0 +1,17 @@
+[
+  { "id": 1, "nombre": "Laptop Asus VivoBook 15", "precio": 650.00, "categoria": "Computadores" },
+  { "id": 2, "nombre": "MacBook Air M2", "precio": 1199.00, "categoria": "Computadores" },
+  { "id": 3, "nombre": "Monitor Gamer LG 27''", "precio": 280.00, "categoria": "Monitores" },
+  { "id": 4, "nombre": "Teclado Mecánico Redragon", "precio": 55.00, "categoria": "Periféricos" },
+  { "id": 5, "nombre": "Mouse Inalámbrico Logitech MX Master 3S", "precio": 99.00, "categoria": "Periféricos" },
+  { "id": 6, "nombre": "Audífonos Sony WH-1000XM5", "precio": 380.00, "categoria": "Audio" },
+  { "id": 7, "nombre": "Parlante Bluetooth JBL Flip 6", "precio": 110.00, "categoria": "Audio" },
+  { "id": 8, "nombre": "Smartphone Samsung Galaxy S24", "precio": 850.00, "categoria": "Celulares" },
+  { "id": 9, "nombre": "iPhone 15 Pro", "precio": 999.00, "categoria": "Celulares" },
+  { "id": 10, "nombre": "Tablet iPad Air 11''", "precio": 599.00, "categoria": "Tablets" },
+  { "id": 11, "nombre": "Smartwatch Apple Watch Series 9", "precio": 399.00, "categoria": "Wearables" },
+  { "id": 12, "nombre": "Cámara Web Logitech C920", "precio": 75.00, "categoria": "Accesorios" },
+  { "id": 13, "nombre": "Disco Duro Externo Seagate 2TB", "precio": 65.00, "categoria": "Almacenamiento" },
+  { "id": 14, "nombre": "SSD NVMe Kingston 1TB", "precio": 85.00, "categoria": "Almacenamiento" },
+  { "id": 15, "nombre": "Silla Gamer Corsair T3", "precio": 250.00, "categoria": "Mobiliario" }
+]
