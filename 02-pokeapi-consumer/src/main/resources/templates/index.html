@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>PokéAPI TCG - Ingeniera Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            color: #333;
+        }
+
+        /* Buscador Superior */
+        .search-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 16px;
+            width: 220px;
+        }
+        .search-box input::placeholder {
+            color: #ccc;
+        }
+        .search-box button {
+            background: #ffcb05;
+            color: #2a75bb;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.2s ease;
+        }
+        .search-box button:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+
+        /* Estructura Carta Pokémon TCG */
+        .tcg-card {
+            width: 360px;
+            height: 520px;
+            background: #f8d030; /* Fondo amarillo clásico TCG */
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 203, 5, 0.4);
+            border: 2px solid #e0a800;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        .tcg-card:hover {
+            transform: translateY(-8px) rotate(1deg);
+        }
+
+        .card-inner {
+            background: linear-gradient(180deg, #e8e8e8 0%, #c8c8c8 100%);
+            border-radius: 10px;
+            height: 100%;
+            border: 2px solid #b0b0b0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Encabezado: Nombre y Tipo */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .pokemon-title {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #222;
+            text-transform: capitalize;
+        }
+        .card-type-badges {
+            display: flex;
+            gap: 5px;
+        }
+        .type-badge {
+            font-size: 10px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: #fff;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        /* Colores por tipo */
+        .bg-grass { background-color: #78C850; }
+        .bg-fire { background-color: #F08030; }
+        .bg-water { background-color: #6890F0; }
+        .bg-electric { background-color: #F8D030; color: #000; }
+        .bg-poison { background-color: #A040A0; }
+        .bg-bug { background-color: #A8B820; }
+        .bg-normal { background-color: #A8A878; }
+        .bg-default { background-color: #68A090; }
+
+        /* Marco de la Ilustración HD */
+        .illustration-frame {
+            background: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+            border: 3px solid #d4af37;
+            border-radius: 8px;
+            height: 230px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .illustration-frame img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4));
+        }
+
+        /* Franja Pokédex de Datos */
+        .pokedex-bar {
+            background: linear-gradient(90deg, #d4af37 0%, #fff3a8 50%, #d4af37 100%);
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            padding: 3px;
+            margin: 8px 0;
+            border-radius: 3px;
+            color: #444;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* Caja de Características Técnicas */
+        .attributes-box {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            padding: 10px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 1px solid #aaa;
+        }
+        .attr-row {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        .attr-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .attr-label {
+            font-size: 10px;
+            color: #666;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .attr-val {
+            font-size: 15px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #555;
+            margin-top: 6px;
+            font-weight: bold;
+        }
+
+        .error-msg {
+            color: #ff4d4d;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Buscador Superior -->
+<div class="search-box">
+    <form th:action="@{/buscar}" method="get" style="display: flex; gap: 10px;">
+        <input type="text" name="nombre" placeholder="Nombre o ID del Pokémon..." th:value="${nombreBusqueda}" required>
+        <button type="submit">Buscar</button>
+    </form>
+</div>
+
+<!-- Mensaje de Error si no existe -->
+<div th:if="${error}" class="error-msg">
+    <p th:text="${error}"></p>
+</div>
+
+<!-- Carta Pokémon TCG -->
+<div th:if="${pokemon}" class="tcg-card">
+    <div class="card-inner">
+
+        <!-- Encabezado de la Carta -->
+        <div class="card-header">
+            <span class="pokemon-title" th:text="${pokemon.name}">Bulbasaur</span>
+            <div class="card-type-badges">
+                    <span th:each="t : ${pokemon.types}"
+                          th:text="${t.type.name}"
+                          th:class="'type-badge bg-' + ${t.type.name}">GRASS</span>
+            </div>
+        </div>
+
+        <!-- Marco de la Ilustración (Imagen HD Official Artwork) -->
+        <div class="illustration-frame">
+            <img th:src="${pokemon.sprites.other != null && pokemon.sprites.other.officialArtwork != null && pokemon.sprites.other.officialArtwork.front_default != null ? pokemon.sprites.other.officialArtwork.front_default : pokemon.sprites.front_default}"
+                 th:alt="${pokemon.name}">
+        </div>
+
+        <!-- Franja Pokédex -->
+        <div class="pokedex-bar"
+             th:text="'N.° ' + ${#numbers.formatInteger(pokemon.id, 3)} + '  |  Pokémon de la PokéAPI'">
+        </div>
+
+        <!-- Características de Ingeniero -->
+        <div class="attributes-box">
+            <div class="attr-row">
+                <div class="attr-item">
+                    <span class="attr-label">Altura</span>
+                    <span class="attr-val" th:text="${pokemon.height / 10.0} + ' m'">0.7 m</span>
+                </div>
+                <div class="attr-item">
+                    <span class="attr-label">Peso</span>
+                    <span class="attr-val" th:text="${pokemon.weight / 10.0} + ' kg'">6.9 kg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pie de Carta -->
+        <div class="card-footer">
+            <span>Ilus. PokéAPI Official Artwork</span>
+            <span>©2026 Spring Boot TCG</span>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
